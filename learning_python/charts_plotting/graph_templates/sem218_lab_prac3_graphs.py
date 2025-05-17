@@ -72,18 +72,27 @@ list_y_axes_R400mm = [y_axis_values_4R_400, y_axis_values_8R_400]
 x_axis_name = "Callipers X position"
 y_axis_name = "Stream Y position"
 
-plot_graph(x_axis_values_4S_180, list_y_axes_S180mm, labels=["4mm-Sharp", "8mm-Sharp"], title="Jet Trajectory, Sharp Nozzle | 180mm Water Level",
-           x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
-plot_graph(x_axis_values_4S_290, list_y_axes_S290mm, labels=["4mm-Sharp", "8mm-Sharp"], title="Jet Trajectory, Sharp Nozzle | 290mm Water Level",
-           x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
-plot_graph(x_axis_values_4S_400, list_y_axes_S400mm, labels=["4mm-Sharp", "8mm-Sharp"], title="Jet Trajectory, Sharp Nozzle | 400mm Water Level",
-           x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
+# plot_graph(x_axis_values_4S_180, list_y_axes_S180mm, labels=["4mm-Sharp", "8mm-Sharp"], title="Jet Trajectory, Sharp Nozzle | 180mm Water Level",
+#            x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
+# plot_graph(x_axis_values_4S_290, list_y_axes_S290mm, labels=["4mm-Sharp", "8mm-Sharp"], title="Jet Trajectory, Sharp Nozzle | 290mm Water Level",
+#            x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
+# plot_graph(x_axis_values_4S_400, list_y_axes_S400mm, labels=["4mm-Sharp", "8mm-Sharp"], title="Jet Trajectory, Sharp Nozzle | 400mm Water Level",
+#            x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
+#
+# plot_graph(x_axis_values_4R_180, list_y_axes_R180mm, labels=["4mm-Round", "8mm-Round"], title="Jet Trajectory, Round Nozzle | 180mm Water Level",
+#            x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
+# plot_graph(x_axis_values_4R_290, list_y_axes_R290mm, labels=["4mm-Round", "8mm-Round"], title="Jet Trajectory, Round Nozzle | 290mm Water Level",
+#            x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
+# plot_graph(x_axis_values_4R_400, list_y_axes_R400mm, labels=["4mm-Round", "8mm-Round"], title="Jet Trajectory, Round Nozzle | 400mm Water Level",
+#            x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
 
-plot_graph(x_axis_values_4R_180, list_y_axes_R180mm, labels=["4mm-Round", "8mm-Round"], title="Jet Trajectory, Round Nozzle | 180mm Water Level",
-           x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
-plot_graph(x_axis_values_4R_290, list_y_axes_R290mm, labels=["4mm-Round", "8mm-Round"], title="Jet Trajectory, Round Nozzle | 290mm Water Level",
-           x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
-plot_graph(x_axis_values_4R_400, list_y_axes_R400mm, labels=["4mm-Round", "8mm-Round"], title="Jet Trajectory, Round Nozzle | 400mm Water Level",
-           x_axis_label="Callipers, x-axis position", y_axis_label="Stream, y-axis position")
+# Round nozzles
+# 4mm round nozzles:
+# x_common = [25, 74, 125, 175, 225, 275, 325, 375]
+# list_y_4mmR_nozzle = [y_axis_values_4R_180+[None, None], y_axis_values_4R_290, y_axis_values_4R_400]
+# plot_graph(x_common, list_y_4mmR_nozzle)
+
+
+
 
 
