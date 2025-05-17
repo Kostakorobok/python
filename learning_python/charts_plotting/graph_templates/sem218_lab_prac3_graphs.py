@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # Function for graph
-def plot_graph (x_list, y_list, labels=None, title="Graph Title", x_axis_label="x-axis", y_axis_label="y-axis", grid=True, invert_y=True, invert_x=False):
+def plot_graph (x_list, y_list, labels=None, title="Graph Title", x_axis_label="x-axis", y_axis_label="y-axis", grid=True, invert_y=True, invert_x=False, show_reynolds_threshold=False):
 
     # Screen format:
     plt.figure(figsize=(10, 6), facecolor="lightgrey")
@@ -11,6 +11,9 @@ def plot_graph (x_list, y_list, labels=None, title="Graph Title", x_axis_label="
         x = x_list[i] if isinstance(x_list[0], list) else x_list
         label=labels[i] if labels and i < len(labels) else None
         plt.plot(x, y, marker='o', linestyle='-', linewidth=2, label=label)
+
+    if show_reynolds_threshold:
+        plt.axhline(y=2300, color='gray', linestyle='--', linewidth=1.5, label='Re = 2300')
 
     #labels:
     plt.title(title, fontsize=16)
@@ -150,4 +153,4 @@ Re_y_axis_1mm = [y_axis_Re_1mm, y_axis_Re_2mm, y_axis_Re_3mm, y_axis_Re_4mm]
 # plot_graph(x_axis_3mm, y_axis_Re_3mm, title="Pipe 3mm Dia | Reynold's Number vs Average Velocity", x_axis_label="Average Velocity m/s", y_axis_label="Reynold's Number", invert_y=False, invert_x=True)
 # plot_graph(x_axis_4mm, y_axis_Re_4mm, title="Pipe 4mm Dia | Reynold's Number vs Average Velocity", x_axis_label="Average Velocity m/s", y_axis_label="Reynold's Number", invert_y=False, invert_x=True)
 
-plot_graph(Re_x_axis, Re_y_axis_1mm, title="Velocity VS Reynold's number", labels=["1mm Diameter Pipe", "2mm Diameter Pipe", "3mm Diameter Pipe", "4mm Diameter Pipe"], x_axis_label="Average Velocity m/s", y_axis_label="Reynold's Number", invert_y=False, invert_x=True)
+plot_graph(Re_x_axis, Re_y_axis_1mm, title="Velocity VS Reynold's number", labels=["1mm Diameter Pipe", "2mm Diameter Pipe", "3mm Diameter Pipe", "4mm Diameter Pipe"], x_axis_label="Average Velocity m/s", y_axis_label="Reynold's Number", invert_y=False, invert_x=False, show_reynolds_threshold=True)
