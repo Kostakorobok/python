@@ -1,5 +1,3 @@
-import tkinter
-
 class Car:
     """Simple car model"""
 
@@ -31,23 +29,18 @@ class Car:
         """Add an increment amount to odometer reading"""
         self.odometer_reading += miles
 
-car1 = Car("Audi", "A4", 2025)
-print(car1.descriptive_name())
-car1.read_odometer()
-car1.update_odometer(23)
-car1.read_odometer()
-a = int(input("Enter odometer incrementation:\n"))
-car1.increment_odometer(a)
+class ElectricCar(Car):
+    """Represents aspects of a car specific to electric vehicles"""
+    def __init__(self, make, model, year):
+        """Initialise attributes of parent car"""
+        super().__init__(make, model, year)
+        self.battery_size = 75
 
-user_input = input("Show new milage? Y/N\n").lower()
-if user_input == "y":
-    car1.read_odometer()
+    def describe_battery(self):
+        """Prints a statement describing battery size"""
+        a = f"{self.make} has {self.battery_size}-kWh battery"
+        return a
 
-user_input = input("Increase again? Y/N\n").lower()
-if user_input == "y":
-    a = int(input("Enter odometer incrementation:\n"))
-    car1.increment_odometer(a)
-
-user_input = input("Show new milage? Y/N\n").lower()
-if user_input == "y":
-    car1.read_odometer()
+my_tesla = ElectricCar("Tesla", "Model S", 2025)
+print(f"{my_tesla.descriptive_name()}\n"
+      f"{my_tesla.describe_battery()}\n")
