@@ -34,5 +34,3 @@ icecreamstand1.describe_restaurant()
 print(f"\n{icecreamstand1.restaurant_name} has following flavours:")
 for i in icecreamstand1.menu:
     i.describe_icecream()
-
-
