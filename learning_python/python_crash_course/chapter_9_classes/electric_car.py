@@ -1,12 +1,12 @@
 class Car:
     """Simple car model"""
 
-    def __init__ (self, make, model, year):
+    def __init__ (self, make, model, year, odometer_reading):
         """Initialises attributes to describe a car"""
         self.make = make
         self.model = model
         self.year = year
-        self.odometer_reading = 0
+        self.odometer_reading = odometer_reading
 
     def descriptive_name(self):
         """Return neatly formatted descriptive name"""
@@ -29,18 +29,87 @@ class Car:
         """Add an increment amount to odometer reading"""
         self.odometer_reading += miles
 
+class PetrolCar(Car):
+    """Represents aspects of a Petrol car"""
+    def __init__(self, make, model, year, odometer_reading):
+        """initialises atributes of parent car"""
+        super().__init__(make, model, year, odometer_reading)
+        self.gas_tank = GasTank()
+
+    def refill(self):
+        fuel = int(input("Enter the amount of petrol to put in the car: "))
+        self.gas_tank += fuel
+
 class ElectricCar(Car):
     """Represents aspects of a car specific to electric vehicles"""
-    def __init__(self, make, model, year):
+    def __init__(self, make, model, year, odometer_reading):
         """Initialise attributes of parent car"""
-        super().__init__(make, model, year)
-        self.battery_size = 75
+        super().__init__(make, model, year, odometer_reading)
+        self.battery = Battery()
+
+    def fill_gas_tank(self):
+        """notify user that EV doesn't have a gas tank"""
+        print("EVs dont use gas!")
+
+class Battery:
+    """Models an EV battery"""
+    def __init__(self, battery_size = 75):
+        self.battery_size = battery_size
+        self.battery_range = 260
 
     def describe_battery(self):
-        """Prints a statement describing battery size"""
-        a = f"{self.make} has {self.battery_size}-kWh battery"
-        return a
+        if self.battery_size == 100:
+            self.battery_range = 315
+        print(f"This battery's capacity is {self.battery_size}-kWh\n"
+              f"Range: {self.battery_range}\n")
 
-my_tesla = ElectricCar("Tesla", "Model S", 2025)
-print(f"{my_tesla.descriptive_name()}\n"
-      f"{my_tesla.describe_battery()}\n")
+class GasTank:
+    """Models petrol tank for combustion car"""
+    def __init__ (self, tank_capacity = 65):
+        self.tank_capacity = tank_capacity
+
+    def read_gas_tank(self):
+        print(f"There is {self.tank_capacity} liters of petrol in the tank")
+
+running = True
+
+petrol_car1 = PetrolCar("Honda", "Accord", 2012, 100000)
+ev_car1 = ElectricCar("Tesla", "Model S", 2019, 1000)
+ev_car1.battery = Battery(100)
+
+while running:
+    user_select = int(input(f"Car Registry:\n"
+                        f"1. {petrol_car1.make}\n"
+                        f"2. {ev_car1.make}\n"
+                        f"3. Quit "))
+
+    if user_select == 1:
+        print(petrol_car1.descriptive_name())
+        user_select = int(input("1. Odometer reading\n"
+                            "2. Back\n"))
+        if user_select == 1:
+            petrol_car1.read_odometer()
+        elif user_select == 2:
+            continue
+        else:
+            print("Wrong Entry")
+
+    elif user_select == 2:
+        print(ev_car1.descriptive_name())
+        user_select = int(input("1. Odometer reading\n"
+                            "2. Battery capacity\n"))
+        if user_select == 1:
+            ev_car1.read_odometer()
+        elif user_select == 2:
+            ev_car1.battery.describe_battery()
+
+        elif user_select == 3:
+            continue
+        else:
+            print("Wrong Entry")
+
+    elif user_select == 3:
+        running = False
+
+    else:
+        print("Wrong entry, try again")
