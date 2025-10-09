@@ -7,6 +7,3 @@ class Restaurant:
     def describe_restaurant(self):
         print(f"Restaurant name: {self.restaurant_name}")
         print(f"Restaurant type: {self.cuisine_type}")
-
-restaurant_1 = Restaurant("Italianaria", "Italian food")
-restaurant_1.describe_restaurant()
