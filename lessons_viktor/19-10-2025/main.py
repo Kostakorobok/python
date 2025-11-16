@@ -19,18 +19,29 @@ class Snake(tk.Canvas):
         self.line_thickness = line_thickness
         self.food_photo = None
         self.photo_snake = None
-        self.direction = ""
+        self.direction = "Right"
+        # from func create_images
 
         self.load_assets()
-        self.create_images()
         self.pack()
         self.start_game()
 
     def start_game(self):
-        self.direction = "Right"
-        self.move_snake()
-        self.bind_all("<Key>", self.change_direction(self.direction))
+        self.bind_all("<Key>", self.change_direction)
+        self.game_loop()
         # set positions
+
+    def update_graphics(self):
+        self.delete("snake")
+        for x_snake, y_snake in self.snake_positions:
+            self.create_image(x_snake, y_snake, image=self.photo_snake, tag="snake")
+        x_food, y_food = self.food_positions  # !!!!!
+        self.create_image(x_food, y_food, image=self.food_photo, tag="food")
+
+    def game_loop(self):
+        self.move_snake()
+        self.update_graphics()
+        root.after(200, self.game_loop)
 
     def move_snake(self):
         # self.snake_positions = [(100, 100), (80, 100), (60, 100)
@@ -47,12 +58,20 @@ class Snake(tk.Canvas):
 
         # self.snake_positions = [(80, 100), (100, 100), (80, 100), (60, 100)]
         self.snake_positions = [new_head] + self.snake_positions[:-1]
-        self.snake_positions.pop()
+        # self.snake_positions.pop()
 
-    def change_direction(self, event):
-        self.move_snake()
+    def change_direction(self, event):  # no turn on 180
+        key = event.keysym
+        if key == "Up" and self.direction != "Down":
+            self.direction = "Up"
+        if key == "Down" and self.direction != "Up":
+            self.direction = "Down"
+        if key == "Left" and self.direction != "Right":
+            self.direction = "Left"
+        if key == "Right" and self.direction != "Left":
+            self.direction = "Right"
 
-    def update_graphics(self):
+    def check_boundaries(self):
         pass
 
     def load_assets(self):
@@ -65,40 +84,19 @@ class Snake(tk.Canvas):
             print(f"{error}")
             root.destroy()
 
-    def create_images(self):
-        for x_snake, y_snake in self.snake_positions:
-            self.create_image(x_snake, y_snake, image=self.photo_snake, tag="snake")
-        x_food, y_food = self.food_positions  # !!!!!
-        self.create_image(x_food, y_food, image=self.food_photo, tag="food")
-
     def set_food_positions(self):
         return (random.randint(0, 300), random.randint(0, 300))  # experiment
 
-    def test(self):
-        # asset_food = tk.Label(self.root, image=self.food_photo).pack()
-        # asset_snake = tk.Label(self.root, image=self.photo_snake).pack()
-        pass
-        # asset_food = self.create_image(100, 100, image=self.food_photo, tag="food")
-        # asset_snake = self.create_image(290, 290, image=self.photo_snake, tag="snake")
 
-root = tk.Tk()
+root = tk.Tk()  # This is window
+# tk.Tk() is the command in Python's tkinter library to create the main application window
 root.title("Show assets!")
 root.resizable(False, False)
-root.geometry("600x620")
-
-# bind
 board = Snake(root)
-board.test()
+
+root.bind('<Left>', board.change_direction)
+root.bind('<Right>', board.change_direction)
+root.bind('<Up>', board.change_direction)
+root.bind('<Down>', board.change_direction)
 
 root.mainloop()
-
-root.bind('<Left>', board.change_direction('Left'))
-root.bind('<Right>', board.change_direction('Right'))
-root.bind('<Up>', board.change_direction('Up'))
-root.bind('<Down>', board.change_direction('Down'))
-
-# graphics :
-# Choice 1 : clear screen -> draw everything again with aonther positions -> blinking problem
-# Choice 2: delete only 1 elem -> remove/ pop doesn't work
-# update_graphics function -> do that
-# reaction on buttons problem.
