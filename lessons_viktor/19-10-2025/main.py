@@ -44,21 +44,26 @@ class Snake(tk.Canvas):
         root.after(200, self.game_loop)
 
     def move_snake(self):
-        # self.snake_positions = [(100, 100), (80, 100), (60, 100)
-        head_x, head_y = self.snake_positions[0]
-        new_head = 0
-        if self.direction == "Up":
-            new_head = (head_x, head_y - 20)  # down, left, right
-        if self.direction == "Down":
-            new_head = (head_x, head_y + 20)
-        if self.direction == "Right":
-            new_head = (head_x + 20, head_y)
-        if self.direction == "Left":
-            new_head = (head_x - 20, head_y)
 
-        # self.snake_positions = [(80, 100), (100, 100), (80, 100), (60, 100)]
+        # Get the current head position (first element in the list)
+        sneak_head_x, sneak_head_y = self.snake_positions[0]
+        new_head = 0
+
+        if self.direction == "Right":
+            new_head = (sneak_head_x + 20, sneak_head_y)
+        elif self.direction == "Left":
+            new_head = (sneak_head_x - 20, sneak_head_y)
+        elif self.direction == "Up":
+            new_head = (sneak_head_x, sneak_head_y - 20)
+        elif self.direction == "Down":
+            new_head = (sneak_head_x, sneak_head_y + 20)
+
+        # Add the new head at the front, remove the last segment
+        # This creates the illusion of movement :-1
         self.snake_positions = [new_head] + self.snake_positions[:-1]
-        # self.snake_positions.pop()
+        # 120, 100, [(100, 100), (80, 100) -> move right
+
+        # https://www.youtube.com/watch?v=ajrtAuDg3yw
 
     def change_direction(self, event):  # no turn on 180
         key = event.keysym
