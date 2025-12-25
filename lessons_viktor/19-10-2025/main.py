@@ -2,25 +2,38 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import random
 
+WALL_MARGIN_PX = 10
+STEP = 20
+
+
 class Snake(tk.Canvas):
+
     def __init__(self, root, width=600, length=620, colour="black", line_thickness=0):
-        super().__init__(root,
-                         width=width,
-                         height=length,
-                         bg=colour,
-                         highlightthickness=line_thickness
-                         )
-        self.snake_positions = [(100, 100), (80, 100), (60, 100)]
-        self.food_positions = self.set_food_positions()
+        super().__init__(
+            root,
+            width=width,
+            height=length,
+            bg=colour,
+            highlightthickness=line_thickness
+        )
+
+        # -------- REQUIRED FIRST --------
         self.root = root
         self.width = width
         self.length = length
         self.colour = colour
         self.line_thickness = line_thickness
+
+        # -------- GAME STATE --------
+        self.snake_positions = [(100, 100), (80, 100), (60, 100)]
+        self.direction = "Right"
+        self.is_game_on = True
+
+        self.food_positions = self.set_food_positions()
+
+        # -------- ASSETS --------
         self.food_photo = None
         self.photo_snake = None
-        self.direction = "Right"
-        # from func create_images
 
         self.load_assets()
         self.pack()
@@ -29,79 +42,117 @@ class Snake(tk.Canvas):
     def start_game(self):
         self.bind_all("<Key>", self.change_direction)
         self.game_loop()
-        # set positions
-
-    def update_graphics(self):
-        self.delete("snake")
-        for x_snake, y_snake in self.snake_positions:
-            self.create_image(x_snake, y_snake, image=self.photo_snake, tag="snake")
-        x_food, y_food = self.food_positions  # !!!!!
-        self.create_image(x_food, y_food, image=self.food_photo, tag="food")
 
     def game_loop(self):
         self.move_snake()
+        self.check_boundaries()
+        self.check_food_collisions()
+        self.check_snake_collisions()
+
+        if not self.is_game_on:
+            return
+
         self.update_graphics()
-        root.after(200, self.game_loop)
+        self.root.after(200, self.game_loop)
 
     def move_snake(self):
+        head_x, head_y = self.snake_positions[0]
 
-        # Get the current head position (first element in the list)
-        sneak_head_x, sneak_head_y = self.snake_positions[0]
-        new_head = 0
-
-        if self.direction == "Right":
-            new_head = (sneak_head_x + 20, sneak_head_y)
-        elif self.direction == "Left":
-            new_head = (sneak_head_x - 20, sneak_head_y)
-        elif self.direction == "Up":
-            new_head = (sneak_head_x, sneak_head_y - 20)
+        if self.direction == "Up":
+            new_head = (head_x, head_y - STEP)
         elif self.direction == "Down":
-            new_head = (sneak_head_x, sneak_head_y + 20)
+            new_head = (head_x, head_y + STEP)
+        elif self.direction == "Left":
+            new_head = (head_x - STEP, head_y)
+        else:  # Right
+            new_head = (head_x + STEP, head_y)
 
-        # Add the new head at the front, remove the last segment
-        # This creates the illusion of movement :-1
-        self.snake_positions = [new_head] + self.snake_positions[:-1]
-        # 120, 100, [(100, 100), (80, 100) -> move right
+        self.snake_positions.insert(0, new_head)
 
-        # https://www.youtube.com/watch?v=ajrtAuDg3yw
+        if (new_head == self.snake_positions[-1]):
+            self.end_game()
+            return
 
-    def change_direction(self, event):  # no turn on 180
+        if new_head != self.food_positions:
+            self.snake_positions.pop()
+
+    def update_graphics(self):
+        self.delete("all")
+
+        for x, y in self.snake_positions:
+            self.create_image(x, y, image=self.photo_snake)
+
+        fx, fy = self.food_positions
+        self.create_image(fx, fy, image=self.food_photo)
+
+    def change_direction(self, event):
         key = event.keysym
+
         if key == "Up" and self.direction != "Down":
             self.direction = "Up"
-        if key == "Down" and self.direction != "Up":
+        elif key == "Down" and self.direction != "Up":
             self.direction = "Down"
-        if key == "Left" and self.direction != "Right":
+        elif key == "Left" and self.direction != "Right":
             self.direction = "Left"
-        if key == "Right" and self.direction != "Left":
+        elif key == "Right" and self.direction != "Left":
             self.direction = "Right"
 
+    def check_food_collisions(self):  # for head
+        if self.snake_positions[0] == self.food_positions:
+            self.food_positions = self.set_food_positions()
+
+    def check_snake_collisions(self):
+        if (self.snake_positions[0] in self.snake_positions[1:]):
+            self.end_game()
+
     def check_boundaries(self):
-        pass
+        x, y = self.snake_positions[0]
+
+        if (
+                x < WALL_MARGIN_PX or
+                y < WALL_MARGIN_PX or
+                x > self.width - WALL_MARGIN_PX or
+                y > self.length - WALL_MARGIN_PX
+        ):
+            self.end_game()
+
+    def end_game(self):
+        self.is_game_on = False
+        self.delete("all")
+        self.create_text(
+            self.width / 2,
+            self.length / 2,
+            text="GAME OVER",
+            fill="#00cc00",
+            font=("Arial", 28, "bold")
+        )
+
+    def set_food_positions(self):
+        while True:
+            x = random.randrange(0, self.width, STEP)
+            y = random.randrange(0, self.length, STEP)
+            if (x, y) not in self.snake_positions:
+                return (x, y)
 
     def load_assets(self):
         try:
-            self.food_image = Image.open("assets/food.png")
-            self.snake_image = Image.open("assets/snake.png")
+            self.food_image = Image.open("assets/food.png").resize((STEP, STEP))
+            self.snake_image = Image.open("assets/snake.png").resize((STEP, STEP))
+
             self.food_photo = ImageTk.PhotoImage(self.food_image)
             self.photo_snake = ImageTk.PhotoImage(self.snake_image)
+
         except IOError as error:
-            print(f"{error}")
-            root.destroy()
-
-    def set_food_positions(self):
-        return (random.randint(0, 300), random.randint(0, 300))  # experiment
+            print(error)
+            self.root.destroy()
 
 
-root = tk.Tk()  # This is window
-# tk.Tk() is the command in Python's tkinter library to create the main application window
-root.title("Show assets!")
+# -------- MAIN --------
+
+root = tk.Tk()
+root.title("Snake Game")
 root.resizable(False, False)
-board = Snake(root)
 
-root.bind('<Left>', board.change_direction)
-root.bind('<Right>', board.change_direction)
-root.bind('<Up>', board.change_direction)
-root.bind('<Down>', board.change_direction)
+board = Snake(root)
 
 root.mainloop()
